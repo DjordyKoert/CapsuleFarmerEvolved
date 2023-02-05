@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class Logger:
-    def createLogger(self, debug: bool):
+    def createLogger(self, debug: bool) -> logging.Logger:
         if (debug):
             level = logging.DEBUG
         else:
