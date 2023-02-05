@@ -1,17 +1,13 @@
-from typing import Iterable, Optional
+from dataclasses import dataclass
+from typing import Optional
 
+@dataclass
 class Account:
-    def __init__(self, username: str, password: str) -> None:
-        self.username = username
-        self.password = password
+    username: str
+    password: str
 
+@dataclass
 class Config:
-    def __init__(
-            self, 
-            accounts: dict[str, Account], 
-            debug: bool = False, 
-            connectorDrops: Optional[str] = None,
-        ) -> None:
-        self.accounts = accounts
-        self.debug = debug
-        self.connectorDrops = connectorDrops
+    accounts: dict[str, Account]
+    debug: bool
+    connectorDrops: Optional[str]
