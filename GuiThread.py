@@ -3,23 +3,20 @@ from time import sleep
 from rich.live import Live
 from rich.table import Table
 
-
 class GuiThread(Thread):
     """
     A thread that creates a capsule farm for a given account
     """
 
-    def __init__(self, log, config, stats, locks):
+    def __init__(self, log, stats, locks):
         """
         Initializes the FarmThread
 
         :param log: Logger object
-        :param config: Config object
         :param stats: Stats, Stats object
         """
         super().__init__()
         self.log = log
-        self.config = config
         self.stats = stats
         self.locks = locks
     
@@ -34,7 +31,14 @@ class GuiThread(Thread):
 
         for acc in self.stats.accountData:
             status = self.stats.accountData[acc]["status"]
-            table.add_row(f"{acc}", f"{status}", f"{self.stats.accountData[acc]['liveMatches']}", f"{self.stats.accountData[acc]['lastCheck']}", f"{self.stats.accountData[acc]['lastDrop']}", f"{self.stats.accountData[acc]['totalDrops']}")
+            table.add_row(
+                f"{acc}", 
+                f"{status}", 
+                f"{self.stats.accountData[acc]['liveMatches']}", 
+                f"{self.stats.accountData[acc]['lastCheck']}",
+                f"{self.stats.accountData[acc]['lastDrop']}", 
+                f"{self.stats.accountData[acc]['totalDrops']}",
+            )
             # table.add_row(f"{acc}", f"{status}", f"{self.stats.accountData[acc]['liveMatches']}", f"{self.stats.accountData[acc]['lastCheck']}")
         return table
 
