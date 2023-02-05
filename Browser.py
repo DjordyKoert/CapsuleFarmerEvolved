@@ -1,6 +1,6 @@
 from Exceptions.NoAccessTokenException import NoAccessTokenException
 from Exceptions.RateLimitException import RateLimitException
-from Match import Match
+from Types.Match import Match
 import cloudscraper
 from pprint import pprint
 from bs4 import BeautifulSoup
