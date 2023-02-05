@@ -3,7 +3,7 @@ from yaml.parser import ParserError
 from rich import print
 
 from Exceptions.InvalidCredentialsException import InvalidCredentialsException
-
+from Types.Config import Account, Config as ConfigType
 
 class Config:
     """
@@ -17,24 +17,25 @@ class Config:
         :param configPath: string, path to the configuration file
         """
         
-        self.accounts = {}
         try:
             with open(configPath, "r",  encoding='utf-8') as f:
                 config = yaml.safe_load(f)
+
                 accs = config.get("accounts")
-                onlyDefaultUsername = True
+
+                accounts: dict[str, Account] = {}
                 for account in accs:
-                    self.accounts[account] = {
+                    accounts[account] = {
                         "username": accs[account]["username"],
                         "password": accs[account]["password"],
-
                     }
-                    if "username" != accs[account]["username"]:
-                        onlyDefaultUsername = False
-                if onlyDefaultUsername:
-                    raise InvalidCredentialsException                    
-                self.debug = config.get("debug", False)
-                self.connectorDrops = config.get("connectorDropsUrl", "")
+                    if "username" == accs[account]["username"]:
+                        raise InvalidCredentialsException              
+
+                debug = config.get("debug", False)
+                connectorDrops = config.get("connectorDropsUrl", "")
+
+                self.config = ConfigType(accounts, debug, connectorDrops)
         except FileNotFoundError as ex:
             print(f"[red]CRITICAL ERROR: The configuration file cannot be found at {configPath}\nHave you extacted the ZIP archive and edited the configuration file?")
             print("Press any key to exit...")
@@ -54,11 +55,11 @@ class Config:
         with open("bestStreams.txt", "r",  encoding='utf-8') as f:
             self.bestStreams = f.read().splitlines()
 
-    def getAccount(self, account: str) -> dict:
+    def getAccount(self, account: str) -> Account:
         """
         Get account information
 
         :param account: string, name of the account
         :return: dictionary, account information
         """
-        return self.accounts[account]
+        return self.config.accounts[account]

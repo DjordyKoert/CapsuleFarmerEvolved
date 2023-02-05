@@ -4,12 +4,14 @@ from time import sleep
 from Browser import Browser
 import requests
 
+from Config import Config
+
 class FarmThread(Thread):
     """
     A thread that creates a capsule farm for a given account
     """
 
-    def __init__(self, log, config, account, stats, locks):
+    def __init__(self, log, config: Config, account: str, stats, locks):
         """
         Initializes the FarmThread
 
@@ -32,7 +34,7 @@ class FarmThread(Thread):
         """
         try:
             self.stats.updateStatus(self.account, "[green]LOGIN")
-            if self.browser.login(self.config.getAccount(self.account)["username"], self.config.getAccount(self.account)["password"], self.locks["refreshLock"]):
+            if self.browser.login(self.config.getAccount(self.account).username, self.config.getAccount(self.account).password, self.locks["refreshLock"]):
                 self.stats.updateStatus(self.account, "[green]LIVE")
                 self.stats.resetLoginFailed(self.account)
                 while True:
@@ -51,7 +53,7 @@ class FarmThread(Thread):
                     else:
                         liveMatchesMsg = "None"
                     self.stats.update(self.account, len(newDrops), liveMatchesMsg)
-                    if self.config.connectorDrops:
+                    if self.config.config.connectorDrops:
                         self.__notifyConnectorDrops(newDrops)
                     sleep(Browser.STREAM_WATCH_INTERVAL)
             else:
@@ -72,7 +74,7 @@ class FarmThread(Thread):
 
     def __notifyConnectorDrops(self, newDrops: list):
         if newDrops:
-            if "https://discord.com/api/webhooks" in self.config.connectorDrops:
+            if "https://discord.com/api/webhooks" in self.config.config.connectorDrops:
                 for x in range(len(newDrops)):
                     title = newDrops[x]["dropsetTitle"]
                     thumbnail = newDrops[x]["dropsetImages"]["cardUrl"]
@@ -91,6 +93,6 @@ class FarmThread(Thread):
                         "username" : "CapsuleFarmerEvolved",
                         "embeds": [embed]
                     }
-                    requests.post(self.config.connectorDrops, headers={"Content-type":"application/json"}, json=params)
+                    requests.post(self.config.config.connectorDrops, headers={"Content-type":"application/json"}, json=params)
             else:
-                requests.post(self.config.connectorDrops, json=newDrops)
+                requests.post(self.config.config.connectorDrops, json=newDrops)

@@ -34,7 +34,7 @@ def init() -> tuple[Logger, Config]:
     Path("./logs/").mkdir(parents=True, exist_ok=True)
     Path("./sessions/").mkdir(parents=True, exist_ok=True)
     config = Config(args.configPath)
-    log = Logger().createLogger(config.debug)
+    log = Logger().createLogger(config.config.debug)
     if not VersionManager.isLatestVersion(CURRENT_VERSION):
         log.warning("!!! NEW VERSION AVAILABLE !!! Download it from: https://github.com/LeagueOfPoro/CapsuleFarmerEvolved/releases/latest")
         print("[bold red]!!! NEW VERSION AVAILABLE !!!\nDownload it from: https://github.com/LeagueOfPoro/CapsuleFarmerEvolved/releases/latest\n")
@@ -46,17 +46,17 @@ def main(log: Logger, config: Config):
     refreshLock = Lock()
     locks = {"refreshLock": refreshLock}
     stats = Stats(farmThreads)
-    for account in config.accounts:
+    for account in config.config.accounts:
         stats.initNewAccount(account)
 
     log.info(f"Starting a GUI thread.")
-    gui = GuiThread(log, config, stats, locks)
+    gui = GuiThread(log, stats, locks)
     gui.daemon = True
     gui.start()
 
     while True:
         toDelete = []
-        for account in config.accounts:
+        for account in config.config.accounts:
             if account not in farmThreads:
                 if stats.getFailedLogins(account) < 3:
                     if stats.getFailedLogins(account) > 0:
