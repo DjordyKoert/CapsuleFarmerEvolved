@@ -11,7 +11,7 @@ class FarmThread(Thread):
     A thread that creates a capsule farm for a given account
     """
 
-    def __init__(self, log, config: Config, account: str, stats, locks):
+    def __init__(self, log, config: Config, account: str, stats, locks) -> None:
         """
         Initializes the FarmThread
 

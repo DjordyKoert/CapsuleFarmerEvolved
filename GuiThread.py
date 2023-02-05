@@ -8,7 +8,7 @@ class GuiThread(Thread):
     A thread that creates a capsule farm for a given account
     """
 
-    def __init__(self, log, stats, locks):
+    def __init__(self, log, stats, locks) -> None:
         """
         Initializes the FarmThread
 

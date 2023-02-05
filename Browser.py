@@ -18,7 +18,7 @@ class Browser:
     SESSION_REFRESH_INTERVAL = 1800.0
     STREAM_WATCH_INTERVAL = 60.0
 
-    def __init__(self, log, config: Config, account: str):
+    def __init__(self, log, config: Config, account: str) -> None:
         """
         Initialize the Browser class
 
